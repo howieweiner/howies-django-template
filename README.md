@@ -3,7 +3,7 @@
 ## Project Setup
 This project can be used as a Django template. To use it:
 ```bash
-django-admin startproject --template https://github.com/howieweiner/howies-django-template --extension=py,md --name=Makefile
+django-admin startproject . --template https://github.com/howieweiner/howies-django-template --extension=py,md --name=Makefile
 ```
 
 ## Getting Started
