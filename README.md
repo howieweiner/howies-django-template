@@ -1,7 +1,7 @@
 # Project Name
 
 ## Project Setup
-This project can be used as a Django template. To use it:
+This project can be used as a Django template. To use it (replacing myproject with your own project name):
 ```bash
 django-admin startproject --template https://github.com/howieweiner/howies-django-template --extension=py,md --name=Makefile myproject .
 ```
