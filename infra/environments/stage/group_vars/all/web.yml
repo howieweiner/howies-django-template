@@ -1,0 +1,18 @@
+project_repo: 
+app_name:
+app_dir: "/home/{{ username }}/{{ app_name }}"
+django_settings_module: "config.settings.production"
+env: "staging"
+django_secret_key:
+database_url:
+domain_name: 
+django_superuser_email: 
+django_superuser_password: 
+new_user_password:
+sendgrid_api_key:
+email_from_address:
+google_application_credentials_path:
+google_db_backup_bucket_name:
+google_storage_project_id:
+site_address:
+celery_broker_url:

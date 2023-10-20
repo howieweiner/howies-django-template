@@ -1,0 +1,49 @@
+---
+- name: Create Celery User and Systemd Service
+  hosts: servers
+  become: yes
+
+  tasks:
+    #    - name: Update apt cache
+    #      apt:
+    #        update_cache: yes
+    #      become: yes
+    #
+    #    - name: Install acl
+    #      apt:
+    #        name: acl
+    #        state: present
+    #      become: yes
+
+    - name: Create 'celery' user
+      user:
+        name: celery
+        comment: Celery User
+        system: yes
+        shell: /bin/false
+
+    #    - name: Set ACLs for the project directory
+    #      acl:
+    #        path: /home/{{ username }}/{{ app_name }}
+    #        entity: celery
+    #        etype: user
+    #        permissions: rwx
+    #        recurse: yes
+    #        state: present
+
+    - name: Copy Celery systemd service unit file
+      template:
+        src: templates/celery.service.j2
+        dest: /etc/systemd/system/celery.service
+      notify: Reload systemd
+
+    - name: Start and enable the Celery service
+      systemd:
+        name: celery
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes

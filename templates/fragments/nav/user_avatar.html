@@ -1,0 +1,8 @@
+<a href="{% url 'users:profile-update' %}"
+   class=" flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800">
+<span
+  class="h-9 w-9 rounded-full flex justify-center items-center bg-pp-green"><span
+  class="text-xs font-semibold">{{ user.initials }}</span></span>
+  <span class="sr-only">Your profile</span>
+  <span aria-hidden="true">{{ user_name }}</span>
+</a>

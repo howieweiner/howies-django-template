@@ -1,0 +1,64 @@
+- name: Setup Database
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Install PIP requirements
+      ansible.builtin.pip:
+        name: psycopg2-binary
+#        extra_args: --break-system-packages
+
+    - name: Create database
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: "{{ db_name }}"
+        encoding: UTF-8
+        lc_collate: en_US.UTF-8
+        lc_ctype: en_US.UTF-8
+        state: present
+        template: 'template0'
+
+    # connect to the database and create a user
+    - name: Create database user
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        db: "{{ db_name }}"
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        state: present
+
+    - name: Grant db user access to app db
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: false
+        privs: ALL
+
+#    - name: Change database owner
+#      become: true
+#      become_user: postgres
+#      community.postgresql.postgresql_owner:
+#        db: '{{ db_name }}'
+#        new_owner: '{{ db_user }}'
+#        obj_type: database
+
+    - name: Set TimeZone parameter
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_set:
+        db: "{{ db_name }}"
+        name: TimeZone
+        value: 'Europe/London'
+
+    - name: Set Transaction isolation
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_set:
+        db: "{{ db_name }}"
+        name: default_transaction_isolation
+        value: 'read committed'

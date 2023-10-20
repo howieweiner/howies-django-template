@@ -1,0 +1,53 @@
+name: Run Django Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    env:
+      ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
+      DATABASE_URL: psql://postgres:postgres@localhost:5432/postgres
+      NEW_USER_PASSWORD: changeme
+      DJANGO_EMAIL_BACKEND: django.core.mail.backends.dummy.EmailBackend
+      SENDGRID_API_KEY: xyz
+      SITE_ADDRESS: http://localhost:8000
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: psycopg2 requirements
+        run: sudo apt-get install libpq-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: 'pip'
+          cache-dependency-path: 'requirements/*.txt'
+
+      - name: Install dependencies
+        run: pip install -r requirements/local.txt
+
+      - name: Run tests
+        run: DJANGO_READ_DOT_ENV_FILE=1 pytest

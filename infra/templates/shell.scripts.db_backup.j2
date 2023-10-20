@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Change directory to the Django project directory
+cd /home/{{ username }}/{{ app_name }}
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Run the Django management command for database backup
+DJANGO_READ_DOT_ENV_FILE=1 python manage.py dbbackup

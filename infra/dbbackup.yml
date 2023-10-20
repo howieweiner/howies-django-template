@@ -1,0 +1,13 @@
+- name: Backup Database
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Run manage.py dbbackup
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: dbbackup
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"

@@ -1,0 +1,47 @@
+# Configure Nginx
+- name: Deploy Nginx
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Create nginx config file
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: "/etc/nginx/sites-available/{{ domain_name }}"
+        mode: u=r,g=r,o=r
+
+    - name: Create nginx config file for domain
+      ansible.builtin.template:
+        src: templates/nginx.domain.j2
+        dest: "/etc/nginx/sites-available/{{ domain_name }}"
+        mode: u=r,g=r,o=r
+
+    - name: Create symlink from site-available to sites-enabled
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/{{ domain_name }}"
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+        mode: u=r,g=r,o=r
+
+    # Change permissions of home directory as nginx needs access
+    # to static files
+    # https://gist.github.com/jhjguxin/6208474https://gist.github.com/jhjguxin/6208474
+    - name: Change permissions of home folder
+      ansible.builtin.file:
+        path: "/home/{{ username }}"
+        mode: '0755'
+
+    - name: Restart the nginx systemd service is running
+      ansible.builtin.systemd:
+        state: restarted
+        name: nginx
+
+    - name: Close port 8000 on the ufw firewall
+      community.general.ufw:
+        rule: deny
+        port: '8000'
+
+    - name: Allow Nginx through the ufw firewall
+      community.general.ufw:
+        rule: allow
+        name: Nginx Full

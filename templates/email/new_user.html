@@ -1,0 +1,17 @@
+{% extends 'email/base_email.html' %} {% block content %}
+<p>Hi {{ first_name }}</p>
+<p>
+  You have been invited to use
+  <span style="font-weight: bold">Django Project</span>.
+</p>
+<p>
+  Please log in at
+  <a style="color: #336699" href="{{ site_address }}">{{ site_address }}</a> and
+  update your temporary password.
+</p>
+<p>
+  Your username is your email address and your temporary password is
+  <span style="font-weight: bold">{{ password }}</span>.
+</p>
+<p style="font-weight: bold">Thank you</p>
+{% endblock %}

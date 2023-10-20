@@ -1,0 +1,44 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}
+
+{% block reg_content %}
+
+  {% include 'fragments/registration/registration_title.html' with title=_("Sign in") %}
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    {% if form.errors %}
+      {% include 'fragments/common/error_alert.html' with message=_("Your username and password did not match") %}
+    {% endif %}
+
+    <form class="space-y-6" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+
+      <div>
+        <label for="username" class="block text-sm font-medium leading-6 text-gray-900">{% trans "Email address"  %}</label>
+        <div class="mt-2">
+          <input id="username" name="username" type="email" autocomplete="email" required class="registration-input"/>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <label for="password" class="block text-sm font-medium leading-6 text-gray-900">{% trans "Password" %}</label>
+        </div>
+        <div class="mt-2">
+          <input id="password" name="password" type="password" autocomplete="current-password" required class="registration-input">
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="flex w-full justify-center btn-primary">{% trans "Sign in" %}</button>
+      </div>
+    </form>
+
+    <div class="flex justify-center mt-8">
+    <p class="text-sm leading-6 text-gray-500">
+      <a href="{% url 'password_reset' %}" class="form-link">{% trans "Forgot password?"  %}</a>
+    </p>
+    </div>
+  </div>
+
+{% endblock %}

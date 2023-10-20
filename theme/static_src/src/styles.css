@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply bg-gray-700 hover:bg-gray-500 text-white font-semibold py-2 px-4 hover:border-transparent rounded hover:text-white hover:cursor-pointer
+  }
+
+  .btn-important {
+    @apply bg-red-700 hover:bg-red-500 text-white font-semibold py-2 px-4 hover:border-transparent rounded hover:text-white hover:cursor-pointer
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 hover:border-transparent rounded hover:cursor-pointer
+  }
+
+  .form-link, .text-link {
+    @apply inline-block py-2 font-semibold text-pp-link hover:text-pp-link-hover hover:cursor-pointer underline underline-offset-2
+  }
+
+  .table-link {
+    @apply font-semibold text-pp-link hover:text-pp-link-hover hover:cursor-pointer underline underline-offset-2
+  }
+
+  /**
+    * Crispy forms
+   */
+  .model-forms {
+    @apply border border-gray-200 rounded-lg shadow-sm p-4
+  }
+
+  /* https://github.com/django-crispy-forms/crispy-tailwind/issues/128
+   */
+  select ~ .pointer-events-none {
+    display: none !important;
+  }
+
+  .asteriskField {
+    @apply ml-1 text-red-600
+  }
+
+  .tab {
+    @apply border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium
+  }
+
+  .active-tab {
+    @apply border-pp-link-hover text-pp-link
+  }
+
+  .inline-text-field {
+    @apply text-gray-700 bg-white border-gray-300 leading-normal py-2 appearance-none w-48 px-4 focus:outline-none border rounded-lg
+  }
+
+  .text-anchor {
+    @apply text-gray-700 border-b border-gray-300 hover:border-gray-700 text-sm
+  }
+
+  .extra-action {
+    @apply text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-sm  py-2 px-4 font-semibold rounded hover:cursor-pointer
+  }
+
+  .file-upload {
+    @apply file:text-gray-700 file:border-0 file:hover:cursor-pointer file:rounded-md file:rounded-tr-none file:rounded-br-none hover:cursor-pointer border rounded-md text-gray-400
+  }
+
+  .registration-input {
+    @apply block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6
+  }
+}

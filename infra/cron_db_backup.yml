@@ -1,0 +1,31 @@
+---
+- name: Setup Cron Job for Django Database Backup
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Create backup script directory
+      file:
+        path: /home/{{ username }}/{{ app_name }}/backup_scripts
+        state: directory
+      become_user: "{{ username }}"
+
+    - name: Copy backup script template
+      template:
+        src: templates/shell.scripts.db_backup.j2
+        dest: /home/{{ username }}/{{ app_name }}/backup_scripts/db_backup.sh
+      become_user: "{{ username }}"
+
+    - name: Make the script executable
+      file:
+        path: /home/{{ username }}/{{ app_name }}/backup_scripts/db_backup.sh
+        mode: '+x'
+      become_user: "{{ username }}"
+
+    - name: Add a nightly cron job for database backup
+      cron:
+        name: "Database Backup"
+        minute: 0
+        hour: 23
+        user: "{{ username }}"
+        job: "/bin/bash /home/{{ username }}/{{ app_name }}/backup_scripts/db_backup.sh"

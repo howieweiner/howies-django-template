@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+{% load crispy_forms_tags %}
+{% block site_content %}
+  <div class="pb-12 max-w-4xl mt-8">
+    <div class="text-center mx-auto">
+      {% include 'fragments/common/messages.html' %}
+    </div>
+
+    <div class="mt-8">
+      {% crispy form form.helper %}
+
+      {% if delete_action %}
+        {% include "fragments/details/generic_delete_action.html" %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

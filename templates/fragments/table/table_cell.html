@@ -1,0 +1,41 @@
+{% spaceless %}
+  <td class="
+  {% if action %}
+    relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-6
+  {% else %}
+    whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6
+  {% endif %}
+  {% if align == 'right' %}
+    text-right
+  {% elif align == 'center' %}
+    text-center
+  {% endif %}
+  {% if bold %}
+    font-medium
+  {% endif %}
+  {% if muted %} text-gray-400{% else %} text-gray-700{% endif %}
+">
+    {% if action %}
+      <a href="
+
+
+
+
+
+
+
+
+
+
+
+
+        {{ action }}{% if page %}?page={{ page.number }}{% endif %}{% if filter %}{% if page %}&{% else %}?{% endif %}{{ filter }}{% endif %}"
+         class="table-link">{{ text }}</a>
+    {% elif link %}
+      <a href="{{ link }}" class="table-link">{{ text }}</a>
+    {% else %}
+      {{ text }}{{ text_suffix }}
+    {% endif %}
+  </td>
+{% endspaceless %}
+

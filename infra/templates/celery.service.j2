@@ -1,0 +1,15 @@
+[Unit]
+Description=Celery Service
+After=network.target
+
+[Service]
+Type=simple
+User=celery
+Environment="DJANGO_SETTINGS_MODULE={{ django_settings_module }}" "DJANGO_READ_DOT_ENV_FILE=1"
+WorkingDirectory=/home/{{ username }}/{{ app_name }}
+ExecStart=/home/{{ username }}/{{ app_name }}/venv/bin/celery -A config worker --loglevel=INFO
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

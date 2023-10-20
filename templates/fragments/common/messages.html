@@ -1,0 +1,5 @@
+{% if messages %}
+  {% for message in messages %}
+    {% include 'fragments/common/success_alert.html' with message=message %}
+  {% endfor %}
+{% endif %}

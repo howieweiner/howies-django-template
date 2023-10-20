@@ -1,0 +1,12 @@
+______________________________
+{{ title }}
+______________________________
+
+Hi {{ first_name }}
+
+You have been invited to...
+
+Please login and update your temporary password. You username is your email address and your temporary password
+is {{ password }}.
+
+Thank you

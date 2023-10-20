@@ -1,0 +1,119 @@
+# Install Django App on Server
+- name: Install Django
+  hosts: servers
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      ansible.builtin.apt:
+        upgrade: true
+        update_cache: true
+        cache_valid_time: 86400 # one day
+
+    - name: Update Git Safe Directory
+      command: git config --global --add safe.directory {{ app_dir }}
+      check_mode: no
+    -
+    # Pull Django project down from GitHub
+    - name: Git pull django project from GitHub
+      ansible.builtin.git: # noqa:latest
+        repo: "{{ project_repo }}"
+        version: main
+        dest: "{{ app_dir }}"
+        accept_hostkey: true
+      become: true
+
+    - name: Create venv and install PIP requirements
+      ansible.builtin.pip:
+        requirements: "{{ app_dir }}/requirements/production.txt"
+        virtualenv: "{{ app_dir }}/venv"
+
+    # Copy .env file
+    - name: copy .env file to app root
+      template:
+        src: templates/.env.j2
+        dest: "{{ app_dir }}/.env"
+
+    - name: Copy over GCP Credentials
+      copy:
+        src: "encrypted/gcp-credentials.json"
+        dest: "{{ app_dir }}/gcp-credentials.json"
+        decrypt: yes
+        mode: 0600
+
+#    - name: Install Tailwind libraries
+#      environment:
+#        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+#        DJANGO_READ_DOT_ENV_FILE: true
+#      community.general.django_manage:
+#        command: tailwind install --no-input
+#        app_path: "{{ app_dir }}"
+#        virtualenv: "{{ app_dir }}/venv"
+#
+#    - name: Build Tailwind assets
+#      environment:
+#        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+#        DJANGO_READ_DOT_ENV_FILE: true
+#      community.general.django_manage:
+#        command: tailwind build --no-input
+#        app_path: "{{ app_dir }}"
+#        virtualenv: "{{ app_dir }}/venv"
+
+    - name: Run manage.py collectstatic
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: collectstatic --no-input
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"
+
+     # Change ownership of project files
+    - name: Change ownership of project files
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        recurse: yes
+      become: true
+
+    - name: Run manage.py makemigrations
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: makemigrations
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"
+
+    - name: Run manage.py migrate
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: migrate
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"
+
+#    # Create a superuser. As the User model is modified to use email as username, we do not pass the --username argument
+#    - name: Check if superuser exists?
+#      command: echo "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(email='{{ django_superuser_email }}').count())" | {{ app_dir }}/venv/bin/python manage.py shell -i python
+#      args:
+#        chdir: "{{ app_dir }}"
+#      environment:
+#        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+#        DJANGO_READ_DOT_ENV_FILE: true
+#      ignore_errors: True
+#      changed_when: False
+#      register: superuser_exists
+#
+#    - name: Create an initial superuser
+#      environment:
+#        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+#        DJANGO_READ_DOT_ENV_FILE: true
+#        DJANGO_SUPERUSER_PASSWORD: "{{ django_superuser_password }}"
+#      community.general.django_manage:
+#        command: "createsuperuser --noinput --email={{ django_superuser_email }}"
+#        project_path: "{{ app_dir }}"
+#        virtualenv: "{{ app_dir }}/venv"
+#      when: superuser_exists.out|trim == "0"

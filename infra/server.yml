@@ -1,0 +1,61 @@
+# https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-automate-initial-server-setup-on-ubuntu-20-04
+# modified for this GitHub repo
+- name: Provision Server
+  hosts: servers
+  become: true
+
+  tasks:
+    # Install aptitude, a tool for interfacing with the Linux package manager:
+    - name: Install aptitude
+      ansible.builtin.apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+  # Avoid use of the root user. Create a user that is granted sudo privileges
+    - name: Setup passwordless sudo
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Create a new regular user with sudo privileges
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: present
+        groups: sudo
+        append: true
+        create_home: true
+
+    # Setup SSH Key access and disable password authentication
+    - name: Set authorized key for remote user
+      ansible.posix.authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
+    - name: Disable password authentication for root
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+
+    # Update linux packages
+    - name: Update apt and install required system packages
+      ansible.builtin.apt:
+        pkg: "{{ sys_packages }}"
+        state: latest
+        update_cache: true
+
+    # Ensure UFW (Uncomplicated Firewall) is properly configured
+    - name: UFW - Allow SSH connections
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: UFW - Enable and deny by default
+      community.general.ufw:
+        state: enabled
+        default: deny

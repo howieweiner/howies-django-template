@@ -1,0 +1,131 @@
+{% extends "base.html" %} {% block content %}
+<div x-data="{ sideBarOpen: false }" @keydown.escape="sideBarOpen = false">
+  <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
+  <div
+    class="relative z-50 lg:hidden"
+    role="dialog"
+    aria-modal="true"
+    x-show="sideBarOpen"
+  >
+    <!-- Off-canvas menu backdrop, show/hide based on off-canvas menu state. -->
+    <div
+      class="fixed inset-0 bg-gray-900/80"
+      x-cloak
+      x-show="sideBarOpen"
+      x-transition.opacity
+      x-transition.duration.300ms
+    >
+      >
+    </div>
+
+    <div class="fixed inset-0 flex">
+      <!-- Off-canvas menu, show/hide based on off-canvas menu state. -->
+      <div
+        class="relative mr-16 flex w-full max-w-xs flex-1"
+        x-cloak
+        x-show="sideBarOpen"
+        x-transition:enter="transition ease-in-out duration-300 transform"
+        x-transition:enter-start="-translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in-out duration-300 transform"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="-translate-x-full"
+      >
+        <!-- Close button, show/hide based on off-canvas menu state. -->
+        <div
+          class="absolute left-full top-0 flex w-16 justify-center pt-5"
+          x-cloak
+          x-show="sideBarOpen"
+          x-transition.opacity
+          x-transition.duration.300ms
+        >
+          <button
+            type="button"
+            class="-m-2.5 p-2.5"
+            @click="sideBarOpen = false;"
+          >
+            <span class="sr-only">Close sidebar</span>
+            <svg
+              class="h-6 w-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sidebar component, swap this element with another sidebar if you like -->
+        <div
+          class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10"
+        >
+          <div class="flex h-16 shrink-0 items-center">
+            {% include "fragments/nav/sidebar-logo.html" %}
+          </div>
+          {% include 'fragments/nav/sidenav.html' with is_desktop=False %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Static sidebar for desktop -->
+  <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-60 lg:flex-col">
+    <!-- Sidebar component, swap this element with another sidebar if you like -->
+    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
+      {% include "fragments/nav/sidebar-logo.html" %} {% include
+      'fragments/nav/sidenav.html' with is_desktop=True %}
+    </div>
+  </div>
+
+  <div
+    class="sticky top-0 z-40 flex items-center gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden"
+  >
+    <button
+      type="button"
+      class="-m-2.5 p-2.5 text-gray-400 lg:hidden"
+      @click="sideBarOpen = true;"
+    >
+      <span class="sr-only">Open sidebar</span>
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    </button>
+    <div class="flex-1 text-sm font-semibold leading-6 text-gray-900">
+      Django Project
+    </div>
+    {% include 'fragments/nav/user_avatar.html' with user_name=user.first_name
+    %}
+  </div>
+
+  <main class="py-10 lg:pl-60">
+    <div class="px-4 sm:px-6 lg:px-8">
+      {% include "fragments/common/page_heading.html" with heading=heading %} {%
+      block site_content %}{% endblock %}
+    </div>
+  </main>
+</div>
+
+{% endblock %} {% block footer_extra_js_uncompressed %}
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+></script>
+{% endblock %}

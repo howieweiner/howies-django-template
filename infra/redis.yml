@@ -1,0 +1,35 @@
+---
+- name: Install and configure Redis
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      become: yes
+
+    - name: Install Redis
+      apt:
+        name: redis-server
+        state: present
+      become: yes
+
+    - name: Set Redis password
+      lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: '^# requirepass'
+        line: 'requirepass {{ redis_password }}'  # Replace 'your_redis_password' with your desired password
+      notify: Restart Redis
+
+    - name: Ensure Redis is running and enabled
+      systemd:
+        name: redis-server
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Restart Redis
+      service:
+        name: redis-server
+        state: restarted

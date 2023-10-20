@@ -1,0 +1,44 @@
+---
+- name: Quick Deploy Django
+  hosts: servers
+
+  tasks:
+    # Pull Django project down from GitHub
+    - name: Git pull django project from GitHub
+      ansible.builtin.git: # noqa:latest
+        repo: "{{ project_repo }}"
+        version: main
+        dest: "{{ app_dir }}"
+        accept_hostkey: true
+      become: true
+
+    - name: Run manage.py collectstatic
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: collectstatic --no-input
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"
+
+    - name: Compress css and js files
+      environment:
+        DJANGO_SETTINGS_MODULE: "{{ django_settings_module }}"
+        DJANGO_READ_DOT_ENV_FILE: true
+      community.general.django_manage:
+        command: compress --force
+        app_path: "{{ app_dir }}"
+        virtualenv: "{{ app_dir }}/venv"
+
+    - name: Change ownership of project files
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        recurse: yes
+      become: true
+
+    - name: Restart the gunicorn systemd service
+      ansible.builtin.systemd:
+        state: restarted
+        name: gunicorn

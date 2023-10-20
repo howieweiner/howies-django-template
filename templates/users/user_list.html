@@ -1,0 +1,30 @@
+{% extends "list_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block list_filter %}
+  {% crispy filter.form filter.form.helper %}
+{% endblock %}
+
+{% block table %}
+  <table class="min-w-full divide-y divide-gray-300">
+    <thead class="bg-gray-50">
+    <tr>
+      {% include 'fragments/table/table_heading.html' with text="Name" %}
+      {% include 'fragments/table/table_heading.html' with text="Email" %}
+      {% include 'fragments/table/table_heading.html' with text="Active" align='center' %}
+      {% include 'fragments/table/table_heading.html' with text="Edit" action_heading=True %}
+    </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+    {% for user in users %}
+      <tr>
+        {% include 'fragments/table/table_cell.html' with text=user.full_name bold=True muted=user.is_disabled %}
+        {% include 'fragments/table/table_cell.html' with text=user.email muted=user.is_disabled %}
+        {% include 'fragments/table/table_cell.html' with text=user.is_active|yesno|title muted=user.is_disabled align='center' %}
+        {% include 'fragments/table/table_cell.html' with text="Edit" action=user.get_absolute_url page=page_obj filter=form_filter_query %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include 'fragments/table/pagination.html' with page=page_obj filter=form_filter_query %}
+{% endblock %}

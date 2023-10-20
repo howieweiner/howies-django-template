@@ -1,0 +1,30 @@
+# Configure Gunicorn as a systemd service
+- name: Deploy Gunicorn
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Create gunicorn socket file
+      ansible.builtin.template:
+        src: templates/gunicorn.socket.j2
+        dest: /etc/systemd/system/gunicorn.socket
+        mode: u=r,g=r,o=r
+
+    - name: Create gunicorn systemd service
+      ansible.builtin.template:
+        src: templates/gunicorn.service.j2
+        dest: /etc/systemd/system/gunicorn.service
+        mode: u=r,g=r,o=r
+      notify:
+        - restart gunicorn.socket
+
+    # Ensure gunicorn socket and system service is running
+    - name: Force systemd to reread configs
+      systemd:
+        daemon_reload: yes
+
+    - name: Start gunicorn systemd service
+      ansible.builtin.service:
+        name: gunicorn.socket
+        state: started
+        enabled: true

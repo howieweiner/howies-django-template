@@ -1,0 +1,29 @@
+  # Configure SSL for Nginx
+- name: Nginx SSL
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Install certbot using snap
+      community.general.snap:
+        name:
+          - certbot
+        classic: true
+
+    - name: Allow HTTPS on the ufw firewall
+      community.general.ufw:
+        rule: allow
+        name: 'Nginx Full'
+
+    - name: Deny HTTP on the ufw firewall
+      community.general.ufw:
+        rule: deny
+        name: 'Nginx HTTP'
+
+    - name: Create SSL certificate
+      become: true
+      ansible.builtin.shell: |
+          certbot --nginx --non-interactive --agree-tos --email {{ email }} --domains {{ domain_name }} --redirect
+      args:
+        executable: /bin/bash
+        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem

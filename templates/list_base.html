@@ -1,0 +1,27 @@
+{% extends 'site_base.html' %}
+
+{% block site_content %}
+  <div class="flex items-center mt-8">
+    <div class="text-center mx-auto">
+      {% include 'fragments/common/messages.html' %}
+    </div>
+    <div class="flex justify-end space-x-8 items-center">
+      {% block extra_actions %}{% endblock %}
+      {% if create_url %}
+        <div class="-mt-24 pb-[4px]">
+          <a href="{{ create_url }}?page={{ page }}" class="btn-primary">Add {{ model_name }}</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        {% block list_filter %}{% endblock %}
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+          {% block table %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

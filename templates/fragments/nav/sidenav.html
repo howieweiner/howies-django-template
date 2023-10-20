@@ -1,0 +1,30 @@
+<nav class="flex flex-1 flex-col">
+  <ul role="list" class="flex flex-1 flex-col gap-y-7">
+    <li>
+      <ul role="list" class="-mx-2 space-y-1">
+        {% include 'fragments/nav/nav_item.html' with section=section link="dashboard:home" text="Dashboard" %}
+
+        {% if user.is_sales %}
+          {% include 'fragments/nav/nav_item.html' with section=section link="quotes:dashboard" text="Quotes" %}
+        {% endif %}
+
+        {% if user.is_admin %}
+          {% include 'fragments/nav/nav_item.html' with section=section link="users:user-list" url_params="?is_active=1"  text="Users" %}
+          {% include 'fragments/nav/nav_item.html' with section=section link="vehicles:vehicle-list" url_params="?is_archived=0" text="Vehicles" %}
+          {% include 'fragments/nav/nav_item.html' with section=section link="settings:settings-update" text="Settings" %}
+        {% endif %}
+      </ul>
+    <li class="mt-auto">
+      <ul>
+        {% include 'fragments/nav/logout_item.html' %}
+        {% if is_desktop %}
+          <li class="-mx-6 mt-4">
+            {% include 'fragments/nav/user_avatar.html' with user_name=user.full_name %}
+          </li>
+        {% endif %}
+      </ul>
+    </li>
+  </ul>
+  </li>
+  </ul>
+</nav>

@@ -1,0 +1,34 @@
+---
+- name: Install and configure Fail2ban
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"  # For Ubuntu/Debian-based systems
+
+    - name: Install Fail2ban
+      apt:
+        name: fail2ban
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Enable Fail2ban service
+      systemd:
+        name: fail2ban
+        enabled: yes
+        state: started
+
+    - name: Copy the Fail2ban configuration file
+      template:
+        src: templates/fail2ban.jail.local.j2
+        dest: /etc/fail2ban/jail.local
+      notify: Reload Fail2ban
+
+  handlers:
+    - name: Reload Fail2ban
+      systemd:
+        name: fail2ban
+        state: reloaded

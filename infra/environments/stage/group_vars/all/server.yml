@@ -1,0 +1,16 @@
+sys_packages:
+  - nginx
+  - curl
+  - wget
+  - vim
+  - git
+  - tree
+  - ufw
+  - whois
+  - python3-virtualenv
+  - python3-pip
+  - python3-dev
+  - libpq-dev
+  - postgresql
+  - postgresql-contrib
+  - python3-passlib

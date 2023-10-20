@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  db:
+    driver: local
+
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    command: [ "postgres", "-c", "log_statement=all" ]
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  redis:
+    image: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

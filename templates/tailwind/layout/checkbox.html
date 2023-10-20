@@ -1,0 +1,77 @@
+{% load crispy_forms_field %}
+
+<div class="mb-3 flex items-center"
+     x-data="{checked: {{ field.value|lower }} }">
+  <input type="checkbox"
+         name="{{ field.name }}"
+    {% if field.field.disabled %}
+         disabled
+    {% endif %}
+         x-bind:checked="checked"
+         class="hidden"
+  />
+  <!-- Enabled: "bg-indigo-600", Not Enabled: "bg-gray-200" -->
+  <button type="button"
+          class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2
+          border-transparent"
+    {% if not field.field.disabled %}
+          x-bind:class="checked ? 'bg-pp-bright-green' : 'bg-gray-200'"
+    {% endif %}
+    {% if field.field.disabled %}
+          x-bind:class="checked ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-200'"
+    {% endif %}
+          role="switch" aria-checked="{{ field.value|lower }}"
+          @click="checked = !checked"
+    {% if field.field.disabled %}
+          disabled
+          aria-disabled="true"
+          x-bind:class="cursor-not-allowed && 'disabled'"
+    {% endif %}
+  >
+    <span class="sr-only">{{ field.label|safe }}</span>
+    <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+    <span aria-hidden="true"
+          x-bind:class="checked ? 'translate-x-5' : 'translate-x-0'"
+          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+  </button>
+  <label
+    {% if not field.field.disabled %}
+      @click="checked = !checked"
+    {% endif %}
+      class="mt-2 ml-4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {% if label_class %}{{ label_class }}{% else %}block text-gray-700 text-sm font-bold{% endif %}{% if not inline_class %} col-form-label{% endif %}{% if field.field.required %} requiredField{% endif %}"
+  >
+    {{ field.label|safe }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}
+  </label>
+</div>
+</div>
+
