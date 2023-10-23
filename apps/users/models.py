@@ -76,7 +76,7 @@ class User(AbstractUser):
         return self.first_name + " " + self.last_name
 
     def initials(self):
-        return (self.first_name[0] + self.last_name[0]).upper()
+        return (self.first_name[0] + self.last_name[0]).upper() if self.first_name and self.last_name else "??"
 
     def is_disabled(self):
         return not self.is_active

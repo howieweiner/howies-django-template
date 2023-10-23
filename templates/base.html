@@ -1,52 +1,40 @@
 {% load static tailwind_tags compress %}
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-white">
-  <head>
-    <title>
-      Django Template App{% if env != 'production' %} | {{ env|upper }}{% endif
-      %}
-    </title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="{% static 'images/favicon-32x32.png' %}"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="{% static 'images/apple-touch-icon.png' %}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="{% static 'images/favicon-32x32.png' %}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="{% static 'images/favicon-16x16.png' %}"
-    />
-    <link rel="stylesheet" href="{{ static_url }}css/{{ env }}.css" />
-    <meta name="theme-color" content="#ffffff" />
-    {% block header_extra %}{% endblock %} {% block header_js %}{% endblock %}
-    {% compress js %} {% block header_extra_js %}{% endblock %} {% endcompress
-    %} {% compress css %} {% tailwind_css %} {% block header_extra_css %}{%
-    endblock %} {% endcompress %}
-    <style>
-      [x-cloak] {
-        display: none !important;
-      }
-    </style>
-  </head>
-  <body class="h-full">
-    <div class="env"></div>
-    {% block content %}{% endblock %} {% compress js %} {% block footer_js %}{%
-    endblock %} {% block footer_extra_js %}{% endblock %} {% endcompress %} {%
-    block footer_extra_js_uncompressed %}{% endblock %}
-  </body>
+<head>
+  <title>My Project{% if env != 'production' %} | {{ env|upper }}{% endif %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+  <link rel="stylesheet" href="{{ static_url }}css/{{ env }}.css"/>
+  <meta name="theme-color" content="#ffffff">
+  {% block header_extra %}{% endblock %}
+  {% block header_js %}{% endblock %}
+  {% compress js %}
+    {% block header_extra_js %}{% endblock %}
+  {% endcompress %}
+  {% compress css %}
+    {% tailwind_css %}
+    {% block header_extra_css %}{% endblock %}
+  {% endcompress %}
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="h-full">
+<div class="env"></div>
+{% block content %}{% endblock %}
+{% compress js %}
+  {% block footer_js %}{% endblock %}
+  {% block footer_extra_js %}{% endblock %}
+{% endcompress %}
+{% block footer_extra_js_uncompressed %}{% endblock %}
+
+</body>
 </html>
