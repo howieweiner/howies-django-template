@@ -37,6 +37,11 @@ SENDGRID_API_KEY=XYZ
 SITE_ADDRESS=http://localhost:8000
 ```
 
+Run the database migrations:
+```bash
+make migrations
+```
+
 Create a Django superuser:
 
 ```bash
